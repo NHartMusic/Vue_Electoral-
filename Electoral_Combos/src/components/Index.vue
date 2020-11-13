@@ -1,14 +1,14 @@
 <template>
   <div class="index container">
-    <div class="card" v-for="state in states" :key="state.id">
+    <div class="card" v-for="combo in combos" :key="combo.id">
       <div class="card-content">
-        <i class="material-icons delete" @click="deleteState(state.id)"
+        <i class="material-icons delete" @click="deletecombo(combo.id)"
           >delete</i
         >
-        <h2 class="indigo-text">{{ state.title }}</h2>
-        <ul class="districts">
-          <li v-for="(district, index) in state.keyDistricts" :key="index">
-            <span class="chip"> {{ district }}</span>
+        <h3 class="indigo-text">{{ combo.title }}: {{combo.electoralVotes}} Electoral Votes</h3>
+        <ul class="states">
+          <li v-for="(state, index) in combo.states" :key="index">
+            <span class="chip"> {{ state }}</span>
           </li>
         </ul>
       </div>
@@ -17,43 +17,33 @@
 </template>
 
 <script>
+import db from '@/firebase/init'
+
 export default {
   name: "Index",
   data() {
     return {
-      states: [
-        {
-          title: "Georgia",
-          slug: "georgia",
-          electoralVotes: 16,
-          keyDistricts: ["Atlanta", "Athens", "Augusta"],
-          id: 1,
-        },
-        {
-          title: "Pennsylvania",
-          slug: "pennsylvania",
-          electoralVotes: 20,
-          keyDistricts: ["Erie", "Philadelphia", "Luzerne"],
-          id: 2,
-        },
-        {
-          title: "Nevada",
-          slug: "nevada",
-          electoralVotes: 6,
-          keyDistricts: ["Reno", "Clark", "CarsonCity"],
-          id: 3,
-        },
-      ],
-    };
+      combos: []
+    }
   },
   methods: {
-    deleteState(id) {
-      this.states = this.states.filter((state) => {
-        return state.id != id;
+    deletecombo(id) {
+      this.combos = this.combos.filter((combo) => {
+        return combo.id != id;
       });
     },
   },
-};
+  created(){
+    db.collection('combos').get()
+    .then(snapshot => {
+      snapshot.forEach( doc => {
+        let combo = doc.data()
+        combo.id = doc.id
+        this.combos.push(combo)
+      })
+    })
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -65,17 +55,17 @@ export default {
   margin-top: 60px;
 }
 
-.index h2 {
-  font-size: 1.8em;
+.index h3 {
+  font-size: 1.6em;
   text-align: center;
   margin-top: 0;
 }
 
-.index .districts {
+.index .states {
   margin: 30px;
 }
 
-.index .districts li {
+.index .states li {
   display: inline-block;
 }
 
