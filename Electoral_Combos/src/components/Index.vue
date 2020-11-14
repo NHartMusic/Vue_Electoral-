@@ -5,7 +5,9 @@
         <i class="material-icons delete" @click="deletecombo(combo.id)"
           >delete</i
         >
-        <h3 class="indigo-text">{{ combo.title }}: {{combo.electoralVotes}} Electoral Votes</h3>
+        <h3 class="indigo-text">
+          {{ combo.title }}: {{ combo.electoralVotes }} Electoral Votes
+        </h3>
         <ul class="states">
           <li v-for="(state, index) in combo.states" :key="index">
             <span class="chip"> {{ state }}</span>
@@ -17,37 +19,40 @@
 </template>
 
 <script>
-import db from '@/firebase/init'
+import db from "@/firebase/init";
 
 export default {
   name: "Index",
   data() {
     return {
-      combos: []
-    }
+      combos: [],
+    };
   },
   methods: {
     deletecombo(id) {
       //delete doc from firestore
-      db.collection('combos').doc(id).delete()
-      .then(() => {
+      db.collection("combos")
+        .doc(id)
+        .delete()
+        .then(() => {
           this.combos = this.combos.filter((combo) => {
-          return combo.id != id;
+            return combo.id != id;
+          });
         });
-      })
     },
   },
-  created(){
-    db.collection('combos').get()
-    .then(snapshot => {
-      snapshot.forEach( doc => {
-        let combo = doc.data()
-        combo.id = doc.id
-        this.combos.push(combo)
-      })
-    })
-  }
-}
+  created() {
+    db.collection("combos")
+      .get()
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
+          let combo = doc.data();
+          combo.id = doc.id;
+          this.combos.push(combo);
+        });
+      });
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
