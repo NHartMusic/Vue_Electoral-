@@ -28,9 +28,13 @@ export default {
   },
   methods: {
     deletecombo(id) {
-      this.combos = this.combos.filter((combo) => {
-        return combo.id != id;
-      });
+      //delete doc from firestore
+      db.collection('combos').doc(id).delete()
+      .then(() => {
+          this.combos = this.combos.filter((combo) => {
+          return combo.id != id;
+        });
+      })
     },
   },
   created(){
