@@ -8,8 +8,15 @@
         <label for="title">Combo Title:</label>
         <input type="text" name="title" v-model="title" />
       </div>
+      <div v-for="(state, index) in states" :key="index">
+        <label for="state">State:</label>
+        <input type="text" name="state" v-model="states[index]" />
+      </div>
       <div class="field add-state">
-        <label for="add-state">Add a state</label>
+        <label for="add-state">
+          Add a state and press tab. Click the 'Add Combo' button when you're
+          done.
+        </label>
         <input
           type="text"
           name="add-state"
@@ -26,6 +33,9 @@
 </template>
 
 <script>
+import db from "@/firebase/init";
+import slugify from "slugify";
+
 export default {
   name: "AddCombo",
   data() {
@@ -34,11 +44,35 @@ export default {
       additional: null,
       states: [],
       feedback: null,
+      slug: null,
     };
   },
   methods: {
     AddCombo() {
-      console.log(this.title, this.states);
+      if (this.title) {
+        this.feedback = null;
+        //create slug
+
+        this.slug = slugify(this.title, {
+          replacement: "-",
+          remove: /[$*_+~.()'"!\-:@]/g,
+          lower: true,
+        });
+        db.collection("combos")
+          .add({
+            title: this.title,
+            states: this.states,
+            slug: this.slug,
+          })
+          .then(() => {
+            this.$router.push({ name: "Index" });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        this.feedback = "You must enter a title for this combination of states";
+      }
     },
     addState() {
       if (this.additional) {

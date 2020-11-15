@@ -6,7 +6,7 @@
           >delete</i
         >
         <h3 class="indigo-text">
-          {{ combo.title }}: {{ combo.electoralVotes }} Electoral Votes
+          {{ combo.title }}
         </h3>
         <ul class="states">
           <li v-for="(state, index) in combo.states" :key="index">
