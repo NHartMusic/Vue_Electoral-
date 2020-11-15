@@ -8,9 +8,10 @@
         <label for="title">Combo Title:</label>
         <input type="text" name="title" v-model="title" />
       </div>
-      <div v-for="(state, index) in states" :key="index">
+      <div v-for="(st, index) in states" :key="index" class="field">
         <label for="state">State:</label>
         <input type="text" name="state" v-model="states[index]" />
+        <i class="material-icons delete" @click="deleteState(st)">delete</i>
       </div>
       <div class="field add-state">
         <label for="add-state">
@@ -83,6 +84,11 @@ export default {
         this.feedback = "Enter a state and press tab";
       }
     },
+    deleteState(st) {
+      this.states = this.states.filter((state) => {
+        return state != st;
+      });
+    },
   },
 };
 </script>
@@ -100,5 +106,15 @@ export default {
 
 .add-combo .field {
   margin: 20px auto;
+  position: relative;
+}
+
+.add-combo .delete {
+  position: absolute;
+  right: 0;
+  bottom: 16px;
+  color: #aaa;
+  font-size: 1.4em;
+  cursor: pointer;
 }
 </style>
